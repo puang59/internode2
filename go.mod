@@ -1,4 +1,4 @@
-module github.com/puang59/wink
+module github.com/puang59/internode
 
 go 1.24.3
 

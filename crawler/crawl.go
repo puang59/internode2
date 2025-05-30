@@ -9,10 +9,10 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func WebSearch(query string, maxResults int) ([][]string, error) {
+func WebSearch(query string, maxResults int) ([][]any, error) {
 	c := colly.NewCollector()
 
-	var result = [][]string{}
+	var result = [][]any{}
 
 	c.OnHTML(".result__body", func(e *colly.HTMLElement) {
 		link := e.ChildAttr(".result__a", "href")
@@ -44,7 +44,14 @@ func WebSearch(query string, maxResults int) ([][]string, error) {
 			}
 		}
 
-		result = append(result, []string{title, finalUrl})
+		// Resursive crawl on finalUrl
+		recResult, err := RecursiveCrawl(finalUrl, 1)
+		if err != nil {
+			fmt.Printf("Error during recursive crawl on %s: %v\n", finalUrl, err)
+			return
+		}
+
+		result = append(result, []any{title, finalUrl, recResult})
 		if len(result) >= maxResults {
 			c.Visit("")
 		}
@@ -63,13 +70,13 @@ func WebSearch(query string, maxResults int) ([][]string, error) {
 	err := c.Visit(searchURL)
 	if err != nil {
 		fmt.Printf("Failed to search for %s: %v\n", query, err)
-		return [][]string{}, err
+		return [][]any{}, err
 	}
 	elapsed := time.Since(startTime)
 	f, err := strconv.ParseFloat(fmt.Sprintf("%.2f", elapsed.Seconds()), 64)
 	if err != nil {
 		fmt.Printf("Error parsing elapsed time: %v\n", err)
-		return [][]string{}, err
+		return [][]any{}, err
 	}
 	fmt.Printf("\nTime elapsed -> %.2f s\n", f)
 

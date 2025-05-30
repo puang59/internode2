@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/puang59/wink/crawler"
+	"github.com/puang59/internode/crawler"
 )
 
 func SearchController(c *gin.Context) {
@@ -25,6 +25,7 @@ func SearchController(c *gin.Context) {
 		c.JSON(404, gin.H{
 			"message": "No results found for the query",
 		})
+
 		return
 	}
 

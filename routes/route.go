@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/puang59/wink/controllers"
+	"github.com/puang59/internode/controllers"
 	"net/http"
 	"time"
 

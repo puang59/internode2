@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/puang59/wink/routes"
+	"github.com/puang59/internode/routes"
 )
 
 var port string = "8080"
