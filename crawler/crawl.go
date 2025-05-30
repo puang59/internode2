@@ -9,14 +9,19 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func WebSearch(query string, maxResults int) ([]string, error) {
+func WebSearch(query string, maxResults int) ([][]string, error) {
 	c := colly.NewCollector()
 
-	var result = []string{}
+	var result = [][]string{}
 
 	c.OnHTML(".result__body", func(e *colly.HTMLElement) {
 		link := e.ChildAttr(".result__a", "href")
 		if link == "" {
+			return
+		}
+
+		title := e.ChildText(".result__a")
+		if title == "" {
 			return
 		}
 
@@ -39,7 +44,7 @@ func WebSearch(query string, maxResults int) ([]string, error) {
 			}
 		}
 
-		result = append(result, finalUrl)
+		result = append(result, []string{title, finalUrl})
 		if len(result) >= maxResults {
 			c.Visit("")
 		}
@@ -58,13 +63,13 @@ func WebSearch(query string, maxResults int) ([]string, error) {
 	err := c.Visit(searchURL)
 	if err != nil {
 		fmt.Printf("Failed to search for %s: %v\n", query, err)
-		return []string{}, err
+		return [][]string{}, err
 	}
 	elapsed := time.Since(startTime)
 	f, err := strconv.ParseFloat(fmt.Sprintf("%.2f", elapsed.Seconds()), 64)
 	if err != nil {
 		fmt.Printf("Error parsing elapsed time: %v\n", err)
-		return []string{}, err
+		return [][]string{}, err
 	}
 	fmt.Printf("\nTime elapsed -> %.2f s\n", f)
 
