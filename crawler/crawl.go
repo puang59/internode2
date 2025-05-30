@@ -45,7 +45,7 @@ func WebSearch(query string, maxResults int) ([][]any, error) {
 		}
 
 		// Resursive crawl on finalUrl
-		recResult, err := RecursiveCrawl(finalUrl, 1)
+		recResult, err := RecursiveCrawl(finalUrl, 2)
 		if err != nil {
 			fmt.Printf("Error during recursive crawl on %s: %v\n", finalUrl, err)
 			return
