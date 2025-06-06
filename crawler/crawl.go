@@ -45,7 +45,7 @@ func WebSearch(query string, maxResults int) ([][]any, error) {
 		}
 
 		// Resursive crawl on finalUrl
-		recResult, err := RecursiveCrawl(finalUrl, 2)
+		recResult, err := RecursiveCrawl(finalUrl, 1)
 		if err != nil {
 			fmt.Printf("Error during recursive crawl on %s: %v\n", finalUrl, err)
 			return
@@ -66,12 +66,30 @@ func WebSearch(query string, maxResults int) ([][]any, error) {
 	})
 
 	startTime := time.Now()
-	searchURL := fmt.Sprintf("https://html.duckduckgo.com/html/?q=%s", url.QueryEscape(query))
-	err := c.Visit(searchURL)
-	if err != nil {
-		fmt.Printf("Failed to search for %s: %v\n", query, err)
-		return [][]any{}, err
+
+	if maxResults > 10 && maxResults <= 20 {
+		for i := range make([]int, 2) {
+			var searchURL string
+			if i == 0 {
+				searchURL = fmt.Sprintf("https://html.duckduckgo.com/html/?q=%s", url.QueryEscape(query))
+			} else {
+				searchURL = fmt.Sprintf("https://html.duckduckgo.com/html/?q=%s&s=50", url.QueryEscape(query))
+			}
+			err := c.Visit(searchURL)
+			if err != nil {
+				fmt.Printf("Failed to search for %s: %v\n", query, err)
+				return [][]any{}, err
+			}
+		}
+	} else {
+		searchURL := fmt.Sprintf("https://html.duckduckgo.com/html/?q=%s", url.QueryEscape(query))
+		err := c.Visit(searchURL)
+		if err != nil {
+			fmt.Printf("Failed to search for %s: %v\n", query, err)
+			return [][]any{}, err
+		}
 	}
+
 	elapsed := time.Since(startTime)
 	f, err := strconv.ParseFloat(fmt.Sprintf("%.2f", elapsed.Seconds()), 64)
 	if err != nil {

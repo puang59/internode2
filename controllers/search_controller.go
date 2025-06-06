@@ -13,7 +13,7 @@ func SearchController(c *gin.Context) {
 		})
 	}
 
-	result, err := crawler.WebSearch(query, 10)
+	result, err := crawler.WebSearch(query, 20)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"error": "Failed to perform search",
