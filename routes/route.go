@@ -30,6 +30,7 @@ func SetupRouter() *gin.Engine {
 	})
 
 	router.GET("/search", controllers.SearchController)
+	router.GET("/quicksearch", controllers.QuickSearchController)
 
 	return router
 }
